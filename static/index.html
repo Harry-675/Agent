@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One——一个就够了</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --border-color: #e4e7ed;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .hidden { display: none !important; }
+        
+        /* Header */
+        header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .icon-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .tab-hint {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        /* Search View */
+        #search-view {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .search-container {
+            width: 100%;
+            max-width: 700px;
+        }
+        
+        .search-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .search-logo h1 {
+            font-size: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .search-box:focus-within {
+            border-color: var(--primary-color);
+        }
+        
+        .search-engine-select {
+            background: #f8f9fa;
+            border: none;
+            padding: 0 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        
+        .search-btn {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 0 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .search-btn:hover {
+            opacity: 0.9;
+        }
+        
+        /* News View */
+        #news-view {
+            padding-bottom: 2rem;
+        }
+        
+        .nav-categories {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            background: white;
+        }
+        
+        .nav-categories button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: #f0f2f5;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-categories button:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .nav-categories button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .news-card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        
+        .news-card .summary {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .news-card .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .news-card .source-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .news-card .source-tag {
+            background: #f0f2f5;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .news-card .source-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 0.25rem;
+        }
+        
+        .news-card .categories {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .news-card .category-tag {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+        
+        .loading, .empty, .error {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .error {
+            color: #e74c3c;
+            background: #fdf2f2;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        /* Settings Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.3rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+        
+        .settings-section h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            gap: 0.5rem;
+        }
+        
+        .settings-item .source-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .settings-item .source-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--primary-color);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .btn-icon:hover {
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .btn-icon.delete {
+            color: #e74c3c;
+        }
+        
+        .btn-icon.delete:hover {
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        .btn-add {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.2s;
+        }
+        
+        .btn-add:hover {
+            opacity: 0.9;
+        }
+        
+        .add-source-form {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f0f2f5;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .add-source-form input {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .add-source-form select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .add-source-form button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .add-source-form .btn-submit {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .add-source-form .btn-cancel {
+            background: #999;
+            color: white;
+        }
+        
+        .search-engine-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .search-engine-item input[type="radio"] {
+            accent-color: var(--primary-color);
+        }
+        
+        .search-engine-item input[type="text"] {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .search-logo h1 {
+                font-size: 2rem;
+            }
+            
+            .search-engine-select {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo" onclick="showNews()">One——一个就够了</div>
+                <div class="header-actions">
+                    <span class="tab-hint">Tab 切换</span>
+                    <button class="icon-btn" onclick="openSettings()" title="设置">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Search View -->
+    <div id="search-view">
+        <div class="search-container">
+            <div class="search-logo">
+                <h1>One</h1>
+            </div>
+            <div class="search-box">
+                <select class="search-engine-select" id="searchEngine">
+                    <option value="https://www.google.com/search?q=">Google</option>
+                    <option value="https://www.bing.com/search?q=">Bing</option>
+                    <option value="https://www.baidu.com/s?wd=">百度</option>
+                    <option value="https://search.brave.com/search?q=">Brave</option>
+                    <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+                </select>
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索或输入网址..." onkeydown="handleSearchKeydown(event)">
+                <button class="search-btn" onclick="doSearch()">搜索</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- News View -->
+    <div id="news-view" class="hidden">
+        <nav class="nav-categories">
+            <div class="container">
+                <button class="active" data-category="all">全部</button>
+                <button data-category="科技">科技</button>
+                <button data-category="金融">金融</button>
+                <button data-category="体育">体育</button>
+                <button data-category="娱乐">娱乐</button>
+                <button data-category="政治">政治</button>
+                <button data-category="健康">健康</button>
+            </div>
+        </nav>
+        
+        <main>
+            <div class="container">
+                <div id="news-container" class="news-grid">
+                    <div class="loading">加载中...</div>
+                </div>
+                <div id="pagination" class="pagination"></div>
+            </div>
+        </main>
+    </div>
+    
+    <footer class="hidden" id="footer">
+        <div class="container">
+            <p>One 智能新闻聚合平台 &copy; 2024</p>
+        </div>
+    </footer>
+    
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>设置</h2>
+                <button class="modal-close" onclick="closeSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>搜索引擎</h3>
+                    <div class="settings-list" id="search-engines-list">
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>新闻源</h3>
+                    <div class="settings-list" id="news-sources-list">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = window.location.origin;
+        let currentView = 'search';
+        let currentCategory = 'all';
+        let currentPage = 1;
+        let totalPages = 1;
+        
+        let searchEngines = [
+            { name: 'Google', url: 'https://www.google.com/search?q=', enabled: true, default: true },
+            { name: 'Bing', url: 'https://www.bing.com/search?q=', enabled: true, default: false },
+            { name: '百度', url: 'https://www.baidu.com/s?wd=', enabled: true, default: false },
+            { name: 'Brave', url: 'https://search.brave.com/search?q=', enabled: true, default: false },
+            { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=', enabled: true, default: false }
+        ];
+        
+        let newsSources = [];
+        
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedEngines = localStorage.getItem('searchEngines');
+            if (savedEngines) {
+                searchEngines = JSON.parse(savedEngines);
+            }
+            
+            const savedSources = localStorage.getItem('newsSources');
+            if (savedSources) {
+                newsSources = JSON.parse(savedSources);
+            }
+        }
+        
+        function saveSettings() {
+            localStorage.setItem('searchEngines', JSON.stringify(searchEngines));
+            localStorage.setItem('newsSources', JSON.stringify(newsSources));
+        }
+        
+        // View switching
+        function showSearch() {
+            currentView = 'search';
+            document.getElementById('search-view').classList.remove('hidden');
+            document.getElementById('news-view').classList.add('hidden');
+            document.getElementById('footer').classList.add('hidden');
+            document.getElementById('searchInput').focus();
+        }
+        
+        function showNews() {
+            currentView = 'news';
+            document.getElementById('search-view').classList.add('hidden');
+            document.getElementById('news-view').classList.remove('hidden');
+            document.getElementById('footer').classList.remove('hidden');
+            fetchNews();
+        }
+        
+        // Tab key to toggle views
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                if (currentView === 'search') {
+                    showNews();
+                } else {
+                    showSearch();
+                }
+            }
+        });
+        
+        // Search functionality
+        function handleSearchKeydown(e) {
+            if (e.key === 'Enter') {
+                doSearch();
+            }
+        }
+        
+        function doSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            // Use the dropdown selected value directly
+            const select = document.getElementById('searchEngine');
+            const selectedUrl = select.value;
+            
+            let url = selectedUrl + encodeURIComponent(query);
+            
+            if (!query.startsWith('http://') && !query.startsWith('https://') && 
+                !query.includes(' ') && query.includes('.')) {
+                url = 'https://' + query;
+            }
+            
+            window.open(url, '_blank');
+        }
+        
+        // News functionality
+        async function fetchNews(category = 'all', page = 1) {
+            const container = document.getElementById('news-container');
+            container.innerHTML = '<div class="loading">加载中...</div>';
+            
+            try {
+                let url = `${API_BASE}/api/news?page=${page}&page_size=20`;
+                if (category !== 'all') {
+                    url += `&category=${category}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.items && data.items.length > 0) {
+                    renderNews(data.items);
+                    totalPages = Math.ceil(data.total / data.page_size);
+                    currentPage = data.page;
+                    renderPagination();
+                } else {
+                    container.innerHTML = '<div class="empty">暂无新闻，点击右上角刷新</div>';
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="error">加载失败: ${error.message}</div>`;
+            }
+        }
+        
+        function renderNews(items) {
+            const container = document.getElementById('news-container');
+            
+            container.innerHTML = items.map(item => {
+                const publishedDate = new Date(item.published_at).toLocaleDateString('zh-CN');
+                const sourceCount = item.source_tags ? item.source_tags.length : 1;
+                
+                return `
+                    <article class="news-card" onclick="window.open('${item.url}', '_blank')">
+                        <div class="categories">
+                            ${item.categories.map(cat => `<span class="category-tag">${cat}</span>`).join('')}
+                        </div>
+                        <h2>${item.title}</h2>
+                        <p class="summary">${item.summary}</p>
+                        <div class="meta">
+                            <div class="source-tags">
+                                ${item.source_tags.map(tag => `<span class="source-tag">${tag}</span>`).join('')}
+                                ${sourceCount > 1 ? `<span class="source-count">+${sourceCount - 1}</span>` : ''}
+                            </div>
+                            <span class="time">${publishedDate}</span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+        
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = `<button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">上一页</button>`;
+            
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">下一页</button>`;
+            
+            container.innerHTML = html;
+        }
+        
+        function changePage(page) {
+            currentPage = page;
+            fetchNews(currentCategory, currentPage);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        document.querySelectorAll('.nav-categories button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-categories button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                currentPage = 1;
+                fetchNews(currentCategory, currentPage);
+            });
+        });
+        
+        // Settings
+        function openSettings() {
+            loadSettings();
+            renderSettings();
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+        
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+        
+        let showAddEngineForm = false;
+        
+        function renderSettings() {
+            // Render search engines
+            const enginesList = document.getElementById('search-engines-list');
+            let enginesHtml = '';
+            
+            if (showAddEngineForm) {
+                enginesHtml += `
+                    <div class="add-source-form">
+                        <input type="text" id="new-engine-name" placeholder="名称 (如 百度)">
+                        <input type="text" id="new-engine-url" placeholder="URL模板 (如 https://baidu.com/s?wd=)" style="flex: 2;">
+                        <button class="btn-submit" onclick="addSearchEngine()">添加</button>
+                        <button class="btn-cancel" onclick="toggleAddEngineForm()">取消</button>
+                    </div>
+                `;
+            } else {
+                enginesHtml += `
+                    <button class="btn-add" onclick="toggleAddEngineForm()" style="margin-bottom: 0.75rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        添加搜索引擎
+                    </button>
+                `;
+            }
+            
+            enginesHtml += searchEngines.map((engine, index) => `
+                <div class="search-engine-item">
+                    <input type="radio" name="default-engine" ${engine.default ? 'checked' : ''} 
+                           onchange="setDefaultEngine(${index})">
+                    <input type="text" value="${engine.name}" 
+                           onchange="updateEngineName(${index}, this.value)">
+                    <input type="text" value="${engine.url}" placeholder="URL模板" 
+                           style="flex: 2"
+                           onchange="updateEngineUrl(${index}, this.value)">
+                    <div class="source-actions">
+                        <button class="btn-icon delete" onclick="deleteSearchEngine(${index})" title="删除">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${engine.enabled ? 'checked' : ''} 
+                                   onchange="toggleEngine(${index})">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+            
+            enginesList.innerHTML = enginesHtml;
+            
+            // Render news sources
+            renderNewsSources();
+            
+            // Update search engine select
+            updateSearchEngineSelect();
+        }
+        
+        function toggleAddEngineForm() {
+            showAddEngineForm = !showAddEngineForm;
+            renderSettings();
+        }
+        
+        function addSearchEngine() {
+            const name = document.getElementById('new-engine-name').value.trim();
+            const url = document.getElementById('new-engine-url').value.trim();
+            
+            if (!name || !url) {
+                alert('请填写名称和URL模板');
+                return;
+            }
+            
+            const id = 'custom-' + Date.now();
+            searchEngines.push({
+                id,
+                name,
+                url,
+                enabled: true,
+                default: false
+            });
+            
+            saveSettings();
+            showAddEngineForm = false;
+            renderSettings();
+            updateSearchEngineSelect();
+        }
+        
+        function deleteSearchEngine(index) {
+            if (searchEngines.length <= 1) {
+                alert('至少保留一个搜索引擎');
+                return;
+            }
+            
+            if (!confirm('确定要删除这个搜索引擎吗？')) return;
+            
+            const wasDefault = searchEngines[index].default;
+            searchEngines.splice(index, 1);
+            
+            if (wasDefault && searchEngines.length > 0) {
+                searchEngines[0].default = true;
+            }
+            
+            saveSettings();
+            renderSettings();
+            updateSearchEngineSelect();
+        }
+        
+        let showAddSourceForm = false;
+        
+        async function renderNewsSources() {
+            const sourcesList = document.getElementById('news-sources-list');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/news/sources`);
+                const sources = await response.json();
+                
+                let html = '';
+                
+                if (showAddSourceForm) {
+                    html += `
+                        <div class="add-source-form">
+                            <input type="text" id="new-source-id" placeholder="ID (如 qq-news)">
+                            <input type="text" id="new-source-name" placeholder="名称 (如 腾讯新闻)">
+                            <input type="text" id="new-source-url" placeholder="RSS URL">
+                            <select id="new-source-category">
+                                <option value="综合">综合</option>
+                                <option value="科技">科技</option>
+                                <option value="金融">金融</option>
+                                <option value="体育">体育</option>
+                                <option value="娱乐">娱乐</option>
+                                <option value="政治">政治</option>
+                                <option value="健康">健康</option>
+                            </select>
+                            <button class="btn-submit" onclick="addNewsSource()">添加</button>
+                            <button class="btn-cancel" onclick="toggleAddSourceForm()">取消</button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <button class="btn-add" onclick="toggleAddSourceForm()" style="margin-bottom: 0.75rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            添加新闻源
+                        </button>
+                    `;
+                }
+                
+                html += sources.map(source => `
+                    <div class="settings-item">
+                        <span class="source-name" title="${source.name}">${source.name}</span>
+                        <div class="source-actions">
+                            <button class="btn-icon delete" onclick="deleteNewsSource('${source.id}')" title="删除">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${source.enabled ? 'checked' : ''} 
+                                       onchange="toggleNewsSource('${source.id}')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                `).join('');
+                
+                sourcesList.innerHTML = html;
+            } catch (e) {
+                sourcesList.innerHTML = '<div class="error">加载失败</div>';
+            }
+        }
+        
+        function toggleAddSourceForm() {
+            showAddSourceForm = !showAddSourceForm;
+            renderNewsSources();
+        }
+        
+        async function addNewsSource() {
+            const id = document.getElementById('new-source-id').value.trim();
+            const name = document.getElementById('new-source-name').value.trim();
+            const url = document.getElementById('new-source-url').value.trim();
+            const category = document.getElementById('new-source-category').value;
+            
+            if (!id || !name || !url) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/news/sources`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id,
+                        name,
+                        url,
+                        crawl_rules: { type: 'rss', category }
+                    })
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert(err.detail || '添加失败');
+                    return;
+                }
+                
+                showAddSourceForm = false;
+                renderNewsSources();
+                fetchNews(currentCategory, currentPage);
+            } catch (e) {
+                alert('添加失败: ' + e.message);
+            }
+        }
+        
+        async function deleteNewsSource(sourceId) {
+            if (!confirm('确定要删除这个新闻源吗？')) return;
+            
+            try {
+                await fetch(`${API_BASE}/api/news/sources/${sourceId}`, { method: 'DELETE' });
+                renderNewsSources();
+                fetchNews(currentCategory, currentPage);
+            } catch (e) {
+                alert('删除失败');
+            }
+        }
+        
+        function setDefaultEngine(index) {
+            searchEngines.forEach((e, i) => e.default = (i === index));
+            saveSettings();
+            updateSearchEngineSelect();
+        }
+        
+        function updateEngineName(index, name) {
+            searchEngines[index].name = name;
+            saveSettings();
+        }
+        
+        function updateEngineUrl(index, url) {
+            searchEngines[index].url = url;
+            saveSettings();
+        }
+        
+        function toggleEngine(index) {
+            searchEngines[index].enabled = !searchEngines[index].enabled;
+            saveSettings();
+            updateSearchEngineSelect();
+        }
+        
+        function updateSearchEngineSelect() {
+            const select = document.getElementById('searchEngine');
+            select.innerHTML = searchEngines.filter(e => e.enabled)
+                .map(e => `<option value="${e.url}" ${e.default ? 'selected' : ''}>${e.name}</option>`)
+                .join('');
+        }
+        
+        async function toggleNewsSource(sourceId) {
+            try {
+                await fetch(`${API_BASE}/api/news/sources/${sourceId}/toggle`, { method: 'POST' });
+                fetchNews(currentCategory, currentPage);
+            } catch (e) {
+                alert('切换失败');
+            }
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('settings-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeSettings();
+            }
+        });
+        
+        // Initialize
+        loadSettings();
+        updateSearchEngineSelect();
+        showSearch();
+    </script>
+</body>
+</html>

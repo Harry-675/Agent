@@ -1,0 +1,38 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# LangChain and AI
+langchain==0.1.0
+langchain-community==0.0.10
+openai==1.6.1  # For Alibaba Bailian API compatibility
+
+# Database
+psycopg2-binary==2.9.9
+asyncpg==0.29.0
+sqlalchemy==2.0.23
+alembic==1.13.0
+
+# Cache
+redis==5.0.1
+hiredis==2.2.3
+
+# Web scraping
+httpx==0.25.2
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Task scheduling
+apscheduler==3.10.4
+
+# Utilities
+python-dotenv==1.0.0
+python-dateutil==2.8.2
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+hypothesis==6.92.1

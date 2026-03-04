@@ -1,0 +1,28 @@
+[
+  {
+    "id": "example-source-1",
+    "name": "示例新闻源 1",
+    "url": "https://example.com/news",
+    "enabled": true,
+    "crawl_rules": {
+      "title": "h1.article-title",
+      "summary": "div.article-summary",
+      "link": "a.article-link",
+      "published_at": "time.publish-date"
+    },
+    "timeout": 30
+  },
+  {
+    "id": "example-source-2",
+    "name": "示例新闻源 2",
+    "url": "https://example2.com/headlines",
+    "enabled": true,
+    "crawl_rules": {
+      "title": ".headline-title",
+      "summary": ".headline-desc",
+      "link": ".headline-url",
+      "published_at": ".headline-time"
+    },
+    "timeout": 30
+  }
+]

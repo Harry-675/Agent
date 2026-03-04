@@ -1,0 +1,79 @@
+[
+  {
+    "id": "qq-news",
+    "name": "腾讯新闻",
+    "url": "https://news.qq.com/rss.xml",
+    "enabled": true,
+    "crawl_rules": {
+      "type": "rss",
+      "category": "综合"
+    },
+    "timeout": 30
+  },
+  {
+    "id": "zhihu-daily",
+    "name": "知乎日报",
+    "url": "https://www.zhihu.com/rss",
+    "enabled": true,
+    "crawl_rules": {
+      "type": "rss",
+      "category": "综合"
+    },
+    "timeout": 30
+  },
+  {
+    "id": "163-news",
+    "name": "网易新闻",
+    "url": "https://news.163.com/special/cm_yaowen20200213/",
+    "enabled": true,
+    "crawl_rules": {
+      "type": "rss",
+      "category": "综合"
+    },
+    "timeout": 30
+  },
+  {
+    "id": "sina-finance",
+    "name": "新浪财经",
+    "url": "https://finance.sina.com.cn/rss/rolling.xml",
+    "enabled": true,
+    "crawl_rules": {
+      "type": "rss",
+      "category": "金融"
+    },
+    "timeout": 30
+  },
+  {
+    "id": "36kr",
+    "name": "36氪",
+    "url": "https://36kr.com/feed",
+    "enabled": true,
+    "crawl_rules": {
+      "type": "rss",
+      "category": "科技"
+    },
+    "timeout": 30
+  },
+  {
+    "id": "ifanr",
+    "name": "爱范儿",
+    "url": "https://www.ifanr.com/feed",
+    "enabled": true,
+    "crawl_rules": {
+      "type": "rss",
+      "category": "科技"
+    },
+    "timeout": 30
+  },
+  {
+    "id": "huxiu",
+    "name": "虎嗅",
+    "url": "https://www.huxiu.com/rss/0.xml",
+    "enabled": true,
+    "crawl_rules": {
+      "type": "rss",
+      "category": "科技"
+    },
+    "timeout": 30
+  }
+]
