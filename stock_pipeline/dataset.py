@@ -7,6 +7,9 @@ from torch.utils.data import Dataset
 
 from stock_pipeline.data_fetch import stock_to_index
 
+# 与用户描述一致：开、收、低、高、量（训练/推理需保持一致）
+FEATURE_COLS = ["open", "close", "low", "high", "volume"]
+
 
 def _zscore(values: np.ndarray) -> np.ndarray:
     mean = values.mean()
@@ -26,12 +29,13 @@ def build_samples(
     stock_df["date"] = pd.to_datetime(stock_df["date"])
     index_df["date"] = pd.to_datetime(index_df["date"])
 
-    for c in ["close", "volume"]:
+    for c in FEATURE_COLS:
         stock_df[c] = pd.to_numeric(stock_df[c], errors="coerce")
         index_df[c] = pd.to_numeric(index_df[c], errors="coerce")
 
+    idx_cols = ["date"] + FEATURE_COLS
     idx_group = {
-        code: g.sort_values("date")[["date", "close", "volume"]].dropna()
+        code: g.sort_values("date")[idx_cols].dropna()
         for code, g in index_df.groupby("index_code")
     }
 
@@ -40,7 +44,8 @@ def build_samples(
     d_list: List[np.datetime64] = []
 
     for i, (code, g_stock) in enumerate(stock_df.groupby("code"), start=1):
-        stock_sorted = g_stock.sort_values("date")[["date", "close", "volume"]].dropna()
+        stock_cols = ["date"] + FEATURE_COLS
+        stock_sorted = g_stock.sort_values("date")[stock_cols].dropna()
         index_code = stock_to_index(str(code))
         if index_code not in idx_group:
             continue
@@ -54,23 +59,24 @@ def build_samples(
             continue
 
         s_close = merged["close_stock"].to_numpy(dtype=np.float64)
-        s_vol = merged["volume_stock"].to_numpy(dtype=np.float64)
-        i_close = merged["close_index"].to_numpy(dtype=np.float64)
-        i_vol = merged["volume_index"].to_numpy(dtype=np.float64)
         dates = merged["date"].to_numpy()
 
         for t in range(window_size - 1, len(merged) - horizon):
             future = s_close[t + 1 : t + horizon + 1]
             label = 1 if np.max(future) > s_close[t] else 0
 
-            feat = np.concatenate(
-                [
-                    _zscore(s_close[t - window_size + 1 : t + 1]),
-                    _zscore(s_vol[t - window_size + 1 : t + 1]),
-                    _zscore(i_close[t - window_size + 1 : t + 1]),
-                    _zscore(i_vol[t - window_size + 1 : t + 1]),
-                ]
-            )
+            feat_parts = []
+            for col in FEATURE_COLS:
+                s_series = merged[f"{col}_stock"].to_numpy(dtype=np.float64)
+                feat_parts.append(
+                    _zscore(s_series[t - window_size + 1 : t + 1])
+                )
+            for col in FEATURE_COLS:
+                i_series = merged[f"{col}_index"].to_numpy(dtype=np.float64)
+                feat_parts.append(
+                    _zscore(i_series[t - window_size + 1 : t + 1])
+                )
+            feat = np.concatenate(feat_parts)
             x_list.append(feat.astype(np.float32))
             y_list.append(label)
             d_list.append(dates[t])

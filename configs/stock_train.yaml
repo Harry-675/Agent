@@ -1,0 +1,41 @@
+data:
+  # 数据抓取时间范围
+  start_date: "2021-04-20"
+  end_date: "2026-04-20"
+  # 原始数据文件路径（训练/测试会从这些原始文件按时间切分）
+  stock_data_file: "data/all_stock_daily_5y.csv"
+  index_data_file: "data/index_daily_5y.csv"
+
+model:
+  # 标签定义窗口参数；输入维度 = window_size * 10（个股开收低高量 + 指数开收低高量，各 z-score）
+  window_size: 120
+  horizon: 5
+  # MLP结构参数
+  hidden_dim: 256
+  model_file: "artifacts/stock_up_mlp.pt"
+
+training:
+  epochs: 15
+  batch_size: 1024
+  learning_rate: 0.001
+  # 多卡：使用 PyTorch DataParallel（单进程多 GPU，无需 torchrun）
+  multi_gpu: true
+  # 指定使用的 GPU 编号，例如 "0,1" 或 [0,1]；不填则使用当前可见的全部 GPU（受 CUDA_VISIBLE_DEVICES 影响）
+  cuda_device_ids: null
+  max_samples: 500000
+  # 仅在 split_mode=time_tail 时生效：前80%训练，后20%测试
+  train_ratio: 0.8
+  # time_tail: 后段做测试；interleaved_time: 交错时间块切分，训练/测试都覆盖多周期
+  split_mode: "interleaved_time"
+  # 每个时间块包含多少自然日（建议 20~40）
+  time_block_days: 20
+  # 每 N 个块取 1 个做测试，例如 5 表示约 20% 测试占比
+  test_blocks_every: 5
+
+fetch:
+  workers: 16
+  # 多进程：单 chunk 最长等待（秒）；连续多轮无完成则关闭进程池并串行补抓
+  chunk_timeout_sec: 180
+  stall_rounds: 5
+  # 每个 chunk 最多包含多少只股票（越小越不易整批卡死）
+  max_chunk_size: 30
